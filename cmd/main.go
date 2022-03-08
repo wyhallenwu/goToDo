@@ -1,5 +1,9 @@
 package main
 
-func main() {
+import (
+	"todotxt/internal/file"
+)
 
+func main() {
+	file.Run()
 }
