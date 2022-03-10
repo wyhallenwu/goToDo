@@ -6,15 +6,24 @@ import (
 )
 
 type Entry struct {
-	index       int
-	description string
-	date        time.Time
+	Description string
+	Date        string
+	status      bool // false: to do; true: done
 }
 
-func (e *Entry) ShowEntry() {
-	fmt.Printf("%d %s %v", e.index, e.description, e.date)
+func (e *Entry) ShowEntry(index int) {
+	fmt.Printf("%d(%v): %s \n", index, e.Date, e.Description)
 }
 
-func NewEntry(index int, description string, date time.Time) *Entry {
-	return &Entry{index, description, date}
+func NewEntry(description string) *Entry {
+	t := time.Now().Format("2006-01-02")
+	return &Entry{description, t, false}
+}
+
+func (e *Entry) GetterStatus() bool {
+	return e.status
+}
+
+func (e *Entry) SetStatus(statusChanged bool) {
+	e.status = statusChanged
 }
