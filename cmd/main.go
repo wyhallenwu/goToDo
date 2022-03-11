@@ -37,10 +37,10 @@ func main() {
 		file.CreateAndInsertEntry(add)
 	}
 	if list {
-		file.ShowFile("../todoList/ToDo.json")
+		file.ShowFile(file.TodoFile)
 	}
 	if show {
-		file.ShowFile("../todoList/Done.json")
+		file.ShowFile(file.DoneFile)
 	}
 	if doneIndex > 0 {
 		file.EntryDone(doneIndex)

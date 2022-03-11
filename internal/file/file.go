@@ -9,6 +9,11 @@ import (
 )
 
 //initialize ======================================
+const (
+	dir      = "/home/wuyuheng/Desktop/todoList"
+	TodoFile = dir + "/ToDo.json"
+	DoneFile = dir + "/Done.json"
+)
 
 // Initialize must run when first using this app
 func Initialize() {
@@ -19,7 +24,6 @@ func Initialize() {
 
 // InitDir is to create a directory for todoList
 func InitDir() {
-	dir := "../todoList"
 	err := os.Mkdir(dir, os.FileMode(0777))
 	if os.IsExist(err) {
 		log.Println("directory ", dir, " exists")
@@ -28,12 +32,12 @@ func InitDir() {
 
 // InitFile is to create two json files
 func InitFile() {
-	fileTodo, err := os.Create("../todoList/ToDo.json")
+	fileTodo, err := os.Create(TodoFile)
 	defer fileTodo.Close()
 	if os.IsExist(err) {
 		log.Println("ToDo.json already exists")
 	}
-	fileDone, err := os.Create("../todoList/Done.json")
+	fileDone, err := os.Create(DoneFile)
 	defer fileDone.Close()
 	if os.IsExist(err) {
 		log.Println("Done.json already exists")
@@ -63,9 +67,9 @@ func CreateAndInsertEntry(description string) {
 func InsertEntryToFile(inEn *entry.Entry) {
 	// entry is newly created
 	if !inEn.GetterStatus() {
-		InsertFile(inEn, "../todoList/ToDo.json")
+		InsertFile(inEn, TodoFile)
 	} else {
-		InsertFile(inEn, "../todoList/Done.json")
+		InsertFile(inEn, DoneFile)
 	}
 }
 
@@ -98,14 +102,15 @@ func ShowFile(filename string) {
 
 // EntryDone changes entry's status to done and do subsequent operations
 func EntryDone(index int) {
-	delEn := RemoveEntry(index, "../todoList/ToDo.json")
+	delEn := RemoveEntry(index, TodoFile)
 	delEn.SetStatus(true)
-	InsertFile(delEn, "../todoList/Done.json")
+	InsertFile(delEn, DoneFile)
+	log.Println(index, " done")
 }
 
 // RemoveEntry removes an entry by searching index
 func RemoveEntry(index int, filename string) *entry.Entry {
-	entryList := ReadFile("../todoList/ToDo.json")
+	entryList := ReadFile(TodoFile)
 	for ix, _ := range entryList {
 		if (ix + 1) == index {
 			reEn := entryList[ix]
