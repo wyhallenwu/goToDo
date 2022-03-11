@@ -2,21 +2,23 @@ package file
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"todotxt/internal/entry"
 )
 
+//initialize ======================================
+
 // Initialize must run when first using this app
 func Initialize() {
-	CreateDir()
-	CreateFile()
+	InitDir()
+	InitFile()
+	log.Println("initialize successfully")
 }
 
-// CreateDir is to create a directory for todoList
-func CreateDir() {
+// InitDir is to create a directory for todoList
+func InitDir() {
 	dir := "../todoList"
 	err := os.Mkdir(dir, os.FileMode(0777))
 	if os.IsExist(err) {
@@ -24,8 +26,8 @@ func CreateDir() {
 	}
 }
 
-// CreateFile is to create two json files
-func CreateFile() {
+// InitFile is to create two json files
+func InitFile() {
 	fileTodo, err := os.Create("../todoList/ToDo.json")
 	defer fileTodo.Close()
 	if os.IsExist(err) {
@@ -38,40 +40,9 @@ func CreateFile() {
 	}
 }
 
-// Insert2File is to insert an entry to the aiming file
-func Insert2File(entryItem *entry.Entry, filename string) {
-	entryList := ReadFile(filename)
-	entryList = append(entryList, *entryItem)
-	data, _ := json.MarshalIndent(entryList, "", "    ")
-	err := ioutil.WriteFile(filename, data, 0777)
-	if err != nil {
-		log.Println(err)
-	}
-}
+// file operations=====================================
 
-func Write2File(entryList []entry.Entry, filename string) {
-	data, _ := json.MarshalIndent(entryList, "", "    ")
-	err := ioutil.WriteFile(filename, data, 0777)
-	if err != nil {
-		log.Println(err)
-	}
-}
-
-func CreateAndInsert(description string) {
-	en := entry.NewEntry(description)
-	InsertEntry(en)
-}
-
-// InsertEntry is to insert an entry into the aiming file
-func InsertEntry(inEn *entry.Entry) {
-	// entry is newly created
-	if !inEn.GetterStatus() {
-		Insert2File(inEn, "../todoList/ToDo.json")
-	} else {
-		Insert2File(inEn, "../todoList/Done.json")
-	}
-}
-
+// ReadFile is to read a json file and return an []Entry
 func ReadFile(filename string) []entry.Entry {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -83,10 +54,41 @@ func ReadFile(filename string) []entry.Entry {
 	return entryList
 }
 
-func Run() {
-	fmt.Println("initialize successfully")
+func CreateAndInsertEntry(description string) {
+	en := entry.NewEntry(description)
+	InsertEntryToFile(en)
 }
 
+// InsertEntryToFile is to insert an entry into the aiming file
+func InsertEntryToFile(inEn *entry.Entry) {
+	// entry is newly created
+	if !inEn.GetterStatus() {
+		InsertFile(inEn, "../todoList/ToDo.json")
+	} else {
+		InsertFile(inEn, "../todoList/Done.json")
+	}
+}
+
+// InsertFile is to insert an entry to the aiming file
+func InsertFile(entryItem *entry.Entry, filename string) {
+	entryList := ReadFile(filename)
+	entryList = append(entryList, *entryItem)
+	data, _ := json.MarshalIndent(entryList, "", "    ")
+	err := ioutil.WriteFile(filename, data, 0777)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func WriteFile(entryList []entry.Entry, filename string) {
+	data, _ := json.MarshalIndent(entryList, "", "    ")
+	err := ioutil.WriteFile(filename, data, 0777)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// ShowFile is to format all entries and show in the terminal
 func ShowFile(filename string) {
 	entryList := ReadFile(filename)
 	for ix, en := range entryList {
@@ -94,21 +96,23 @@ func ShowFile(filename string) {
 	}
 }
 
+// EntryDone changes entry's status to done and do subsequent operations
+func EntryDone(index int) {
+	delEn := RemoveEntry(index, "../todoList/ToDo.json")
+	delEn.SetStatus(true)
+	InsertFile(delEn, "../todoList/Done.json")
+}
+
+// RemoveEntry removes an entry by searching index
 func RemoveEntry(index int, filename string) *entry.Entry {
 	entryList := ReadFile("../todoList/ToDo.json")
 	for ix, _ := range entryList {
 		if (ix + 1) == index {
 			reEn := entryList[ix]
 			entryList = append(entryList[:ix], entryList[ix+1:]...)
-			Write2File(entryList, filename)
+			WriteFile(entryList, filename)
 			return &reEn
 		}
 	}
 	return nil
-}
-
-func Finished(index int) {
-	delEn := RemoveEntry(index, "../todoList/ToDo.json")
-	delEn.SetStatus(true)
-	Insert2File(delEn, "../todoList/Done.json")
 }
