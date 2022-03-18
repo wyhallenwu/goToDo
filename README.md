@@ -5,5 +5,7 @@ a terminal todo list implemented in golang. Inspired by todo.txt-cli
 - [x] two files (1)todo (2)done  
 - [x] refactor the two files to json format
 - [x] build functions to handle files(read, insert, show)
-- [ ] refactor codes
-- [ ] create procedure flow
+- [x] refactor codes
+- [x] create procedure flow
+- [ ] add project attribute for each todo item
+## further thinking

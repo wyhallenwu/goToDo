@@ -96,7 +96,7 @@ func WriteFile(entryList []entry.Entry, filename string) {
 func ShowFile(filename string) {
 	entryList := ReadFile(filename)
 	for ix, en := range entryList {
-		en.ShowEntry(ix + 1)
+		en.PrintEntry(ix + 1)
 	}
 }
 
@@ -120,4 +120,32 @@ func RemoveEntry(index int, filename string) *entry.Entry {
 		}
 	}
 	return nil
+}
+
+func GroupByProject(filename string, project string) []entry.Entry {
+	entryList := ReadFile(filename)
+	groupEntry := make([]entry.Entry, 0)
+	for _, item := range entryList {
+		if item.Project == project {
+			groupEntry = append(groupEntry, item)
+		}
+	}
+	return groupEntry
+}
+
+// PrintGroup prints all items which belongs to project
+func PrintGroup(filename string, project string) {
+	groupEntry := GroupByProject(filename, project)
+	for ix, item := range groupEntry {
+		item.PrintEntry(ix)
+	}
+}
+
+// AddProjectToItem changes the group the item belongs to
+func AddProjectToItem(index int, project string, filename string) {
+	entryList := ReadFile(filename)
+	changeEntry := &entryList[index]
+	changeEntry.SetProject(project)
+	// write back to file
+	WriteFile(entryList, TodoFile)
 }

@@ -7,12 +7,15 @@ import (
 )
 
 var (
-	initial   bool   // initial is to initialize all files when first use
-	add       string // add represents description
-	list      bool   // list to_do file
-	show      bool   // show done file
-	doneIndex int    // doneIndex represents entry is done
-	help      bool   // show help info
+	initial     bool   // initial is to initialize all files when first use
+	add         string // add represents description
+	list        bool   // list to_do file
+	show        bool   // show done file
+	index       int    // index represent the item index
+	done        bool
+	group       string // category
+	help        bool   // print help info
+	changeGroup bool   // changeGroup
 )
 
 func init() {
@@ -20,29 +23,34 @@ func init() {
 	flag.StringVar(&add, "a", "", "add descriptions of the entry")
 	flag.BoolVar(&list, "l", false, "list all todo entries")
 	flag.BoolVar(&show, "s", false, "show add done entries")
-	flag.IntVar(&doneIndex, "d", 0, "entry doneIndex is finished")
+	flag.IntVar(&index, "i", 1, "entry index")
+	flag.BoolVar(&done, "d", false, "done or not")
 	flag.BoolVar(&help, "h", false, "show help information")
+	flag.StringVar(&group, "p", "", "please input project category")
+	// todo: add change group
+	flag.BoolVar(&changeGroup, "c", false, "change or not")
 }
 
 func main() {
 	flag.Parse()
-	if help {
+	// parse command and run
+	switch {
+	case help:
 		flag.Usage()
 		os.Exit(0)
-	}
-	if initial {
+	case initial:
 		file.Initialize()
-	}
-	if add != "" {
+	case add != "":
 		file.CreateAndInsertEntry(add)
-	}
-	if list {
+	case list:
 		file.ShowFile(file.TodoFile)
-	}
-	if show {
+	case show:
 		file.ShowFile(file.DoneFile)
-	}
-	if doneIndex > 0 {
-		file.EntryDone(doneIndex)
+	case done && index > 0:
+		file.EntryDone(index)
+	case group != "":
+		file.PrintGroup(file.TodoFile, group)
+	case changeGroup && index > 0 && group != "": // todo: bugs exists
+		file.AddProjectToItem(index, group, file.TodoFile)
 	}
 }
