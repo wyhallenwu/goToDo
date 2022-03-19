@@ -144,8 +144,7 @@ func PrintGroup(filename string, project string) {
 // AddProjectToItem changes the group the item belongs to
 func AddProjectToItem(index int, project string, filename string) {
 	entryList := ReadFile(filename)
-	changeEntry := &entryList[index]
-	changeEntry.SetProject(project)
+	entryList[index-1].SetProject(project)
 	// write back to file
 	WriteFile(entryList, TodoFile)
 }

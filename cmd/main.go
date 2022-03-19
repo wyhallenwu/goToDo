@@ -23,7 +23,7 @@ func init() {
 	flag.StringVar(&add, "a", "", "add descriptions of the entry")
 	flag.BoolVar(&list, "l", false, "list all todo entries")
 	flag.BoolVar(&show, "s", false, "show add done entries")
-	flag.IntVar(&index, "i", 1, "entry index")
+	flag.IntVar(&index, "i", 0, "entry index")
 	flag.BoolVar(&done, "d", false, "done or not")
 	flag.BoolVar(&help, "h", false, "show help information")
 	flag.StringVar(&group, "p", "", "please input project category")
@@ -48,9 +48,9 @@ func main() {
 		file.ShowFile(file.DoneFile)
 	case done && index > 0:
 		file.EntryDone(index)
-	case group != "":
-		file.PrintGroup(file.TodoFile, group)
 	case changeGroup && index > 0 && group != "": // todo: bugs exists
 		file.AddProjectToItem(index, group, file.TodoFile)
+	case group != "":
+		file.PrintGroup(file.TodoFile, group)
 	}
 }
