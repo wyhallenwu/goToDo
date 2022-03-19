@@ -1,0 +1,4 @@
+fileconfig:
+    dir: /home/wuyuheng/Desktop/todoList/
+    todofile: ToDo.json
+    donefile: Done.json

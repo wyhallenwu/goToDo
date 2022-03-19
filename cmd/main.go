@@ -27,7 +27,6 @@ func init() {
 	flag.BoolVar(&done, "d", false, "done or not")
 	flag.BoolVar(&help, "h", false, "show help information")
 	flag.StringVar(&group, "p", "", "please input project category")
-	// todo: add change group
 	flag.BoolVar(&changeGroup, "c", false, "change or not")
 }
 
@@ -48,7 +47,7 @@ func main() {
 		file.ShowFile(file.DoneFile)
 	case done && index > 0:
 		file.EntryDone(index)
-	case changeGroup && index > 0 && group != "": // todo: bugs exists
+	case changeGroup && index > 0 && group != "":
 		file.AddProjectToItem(index, group, file.TodoFile)
 	case group != "":
 		file.PrintGroup(file.TodoFile, group)

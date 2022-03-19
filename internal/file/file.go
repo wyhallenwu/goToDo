@@ -2,18 +2,30 @@ package file
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
+	"todotxt/internal/argument"
 	"todotxt/internal/entry"
 )
 
 //initialize ======================================
-const (
-	dir      = "/home/wuyuheng/Desktop/todoList"
-	TodoFile = dir + "/ToDo.json"
-	DoneFile = dir + "/Done.json"
+var (
+	dir      string
+	TodoFile string
+	DoneFile string
 )
+
+func init() {
+	conf, err := argument.ReadConfig("../config.yml")
+	if err != nil {
+		panic(err)
+	}
+	dir = conf.Fileconfig.Dir
+	TodoFile = dir + conf.Fileconfig.TodoFile
+	DoneFile = dir + conf.Fileconfig.DoneFile
+}
 
 // Initialize must run when first using this app
 func Initialize() {
@@ -144,6 +156,10 @@ func PrintGroup(filename string, project string) {
 // AddProjectToItem changes the group the item belongs to
 func AddProjectToItem(index int, project string, filename string) {
 	entryList := ReadFile(filename)
+	if index <= 0 || index > len(entryList) {
+		err := errors.New("index is not in the range")
+		panic(err)
+	}
 	entryList[index-1].SetProject(project)
 	// write back to file
 	WriteFile(entryList, TodoFile)
