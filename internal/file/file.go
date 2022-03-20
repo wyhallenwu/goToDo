@@ -18,7 +18,7 @@ var (
 )
 
 func init() {
-	conf, err := argument.ReadConfig("../config.yml")
+	conf, err := argument.ReadConfig("./config.yml")
 	if err != nil {
 		panic(err)
 	}
@@ -149,7 +149,7 @@ func GroupByProject(filename string, project string) []entry.Entry {
 func PrintGroup(filename string, project string) {
 	groupEntry := GroupByProject(filename, project)
 	for ix, item := range groupEntry {
-		item.PrintEntry(ix)
+		item.PrintEntry(ix + 1)
 	}
 }
 

@@ -51,5 +51,7 @@ func main() {
 		file.AddProjectToItem(index, group, file.TodoFile)
 	case group != "":
 		file.PrintGroup(file.TodoFile, group)
+	default:
+		file.ShowFile(file.TodoFile)
 	}
 }
